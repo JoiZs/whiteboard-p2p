@@ -1,23 +1,20 @@
-import React, { useEffect } from "react";
+import createRoom from "../utils/generateRoomId";
 import socket from "../utils/socket";
 
 type Props = {};
 
 const Home = (props: Props) => {
-  useEffect(() => {
-    const createRoom = async () => {
-      try {
-        const resp = await socket.timeout(5000).emitWithAck("create-room");
-        console.log(resp);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    createRoom();
-  }, []);
   return (
     <div className="w-full h-full flex justify-center items-center">
-      <button>Create </button>
+      <div className="flex flex-col gap-2">
+        <div>
+          <input type="text" placeholder="Room Id" />
+          <button>Join</button>
+        </div>
+        <button className="w-full bg-red-500" onClick={createRoom}>
+          Create{" "}
+        </button>
+      </div>
     </div>
   );
 };
