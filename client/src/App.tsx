@@ -1,7 +1,9 @@
+import Home from "./pages/home";
+
 function App() {
   return (
-    <div>
-      <h1 className="text-red-500">Hewowowowo</h1>
+    <div className="w-full h-screen">
+      <Home />
     </div>
   );
 }
