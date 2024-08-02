@@ -13,13 +13,17 @@ import { nanoid } from "nanoid";
   io.on("connection", (socket) => {
     socket.on("create-room", (callback) => {
       const nnid = nanoid(6);
-      // socket.emit("make-room", nnid);
       socket.join(nnid);
       callback({ roomId: nnid });
     });
 
-    socket.on("join-room", ({ roomid }) => {
-      socket.join(roomid);
+    socket.on("join-room", ({ roomid }, callback) => {
+      if (io.of("/").adapter.rooms.has(roomid)) {
+        socket.join(roomid);
+        callback({ status: "room-joined" });
+      } else {
+        callback({ status: "room-not-found" });
+      }
     });
   });
   httpServer.listen(port, () => console.log("UP!: http://localhost:", port));
