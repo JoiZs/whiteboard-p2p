@@ -21,12 +21,17 @@
     "@libp2p/websockets": "^8.1.4",
     "@libp2p/webtransport": "^4.1.4",
     "@multiformats/multiaddr": "^12.3.0",
+    "konva": "^9.3.14",
     "libp2p": "^1.8.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-konva": "^18.2.10",
     "react-router-dom": "^6.26.0",
     "sass": "^1.77.8",
-    "socket.io-client": "^4.7.5"
+    "socket.io-client": "^4.7.5",
+    "y-indexeddb": "^9.0.12",
+    "y-webrtc": "^10.3.0",
+    "yjs": "^13.6.18"
   },
   "devDependencies": {
     "@types/react": "^18.2.37",

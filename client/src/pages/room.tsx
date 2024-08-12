@@ -1,5 +1,11 @@
+import Whiteboard from "../components/whiteboard";
+
 const room = () => {
-  return <div>room</div>;
+  return (
+    <div>
+      <Whiteboard />
+    </div>
+  );
 };
 
 export default room;
