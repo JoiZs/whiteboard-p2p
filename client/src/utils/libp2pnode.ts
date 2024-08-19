@@ -46,6 +46,10 @@ const ClientNode = async (relayAddrs: any, topicSec: string) => {
     },
   });
 
+  clientnode.handle("/wbprot", async (stream) => {
+    console.log(stream);
+  });
+
   return clientnode;
 };
 

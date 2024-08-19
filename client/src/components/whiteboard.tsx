@@ -8,14 +8,14 @@ const Whiteboard = () => {
   const [mouse, setMouse] = useState(false);
 
   useEffect(() => {
-    indexeddbProvider.whenSynced.then(() => {
+    indexeddbProvider.whenSynced.then(async () => {
+      // console.log(await TransformData(wbArray.toArray()));
       setLines(wbArray.toArray());
     });
   }, []);
 
-  const handleMouseDown = (e: any) => {
+  const handleMouseDown = async (e: any) => {
     setMouse(true);
-    console.log("Mouse Down");
     const point = e.target.getStage().getPointerPosition();
     setLines([...lines, { tool, points: [point.x, point.y] }]);
   };
@@ -27,14 +27,12 @@ const Whiteboard = () => {
     const point = stage.getPointerPosition();
     let lastLine = lines[lines.length - 1];
     lastLine.points = lastLine.points.concat([point.x, point.y]);
-    console.log(lastLine.points);
     lines.splice(lines.length - 1, 1, lastLine);
     setLines(lines.concat());
   };
   const handleMouseUp = () => {
     setMouse(false);
     wbArray.push([lines[lines.length - 1]]);
-    console.log("Mouse Up");
   };
   return (
     <>

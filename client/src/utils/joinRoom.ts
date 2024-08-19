@@ -1,5 +1,6 @@
 import ClientNode from "./libp2pnode";
 import socket from "./socket";
+import TransformData from "./datatransform";
 
 const JoinRoomFn = async (roomId: string) => {
   try {
@@ -11,8 +12,15 @@ const JoinRoomFn = async (roomId: string) => {
         resp["relayAddrs"].split(","),
         roomId,
       );
-      clientnode.addEventListener("peer:connect", (ev) => {
-        console.log(ev.detail.toString());
+
+      clientnode.addEventListener("peer:connect", async (ev) => {
+        for (let conn of clientnode.getConnections()) {
+          if (conn.multiplexer == "/webrtc") {
+            const stream = await conn.newStream("/wbprot");
+
+            await TransformData(stream);
+          }
+        }
       });
     }
     return resp;
