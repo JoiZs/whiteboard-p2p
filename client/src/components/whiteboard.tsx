@@ -1,14 +1,23 @@
-import { useState } from "react";
-import { Stage, Layer, Line, Text } from "react-konva";
+import { useState, useEffect } from "react";
+import { Stage, Layer, Line } from "react-konva";
+import { wbArray, indexeddbProvider } from "../utils/crdt";
 
 const Whiteboard = () => {
+  const [tool, setTool] = useState("pen");
   const [lines, setLines] = useState<any>([]);
   const [mouse, setMouse] = useState(false);
+
+  useEffect(() => {
+    indexeddbProvider.whenSynced.then(() => {
+      setLines(wbArray.toArray());
+    });
+  }, []);
+
   const handleMouseDown = (e: any) => {
     setMouse(true);
     console.log("Mouse Down");
     const point = e.target.getStage().getPointerPosition();
-    setLines([...lines, { points: [point.x, point.y] }]);
+    setLines([...lines, { tool, points: [point.x, point.y] }]);
   };
   const habdleMouseMove = (e: any) => {
     if (!mouse) {
@@ -18,40 +27,58 @@ const Whiteboard = () => {
     const point = stage.getPointerPosition();
     let lastLine = lines[lines.length - 1];
     lastLine.points = lastLine.points.concat([point.x, point.y]);
+    console.log(lastLine.points);
     lines.splice(lines.length - 1, 1, lastLine);
     setLines(lines.concat());
-    console.log(lines);
   };
   const handleMouseUp = () => {
     setMouse(false);
+    wbArray.push([lines[lines.length - 1]]);
     console.log("Mouse Up");
   };
   return (
-    <Stage
-      width={window.innerWidth}
-      height={window.innerHeight}
-      onMouseDown={handleMouseDown}
-      onMouseMove={habdleMouseMove}
-      onMouseUp={handleMouseUp}
-    >
-      <Layer>
-        <Text text="Just start drawing" fontSize={15} />
-        {lines.map((line: any, i: any) => {
-          return (
-            <Line
-              key={i}
-              points={line.points}
-              stroke="black"
-              strokeWidth={5}
-              tension={0.5}
-              lineCap="round"
-              lineJoin="round"
-              globalCompositeOperation={"source-over"}
-            />
-          );
-        })}
-      </Layer>
-    </Stage>
+    <>
+      <div className="m-5 flex flex-col gap-5 justify-start">
+        <img
+          src="../../public/pen.svg"
+          alt="penImg"
+          className="w-10"
+          onClick={() => setTool("pen")}
+        />
+        <img
+          src="../../public/eraser.png"
+          alt="eraserImg"
+          className="w-10"
+          onClick={() => setTool("eraser")}
+        />
+      </div>
+      <Stage
+        width={window.innerWidth}
+        height={window.innerHeight}
+        onMouseDown={handleMouseDown}
+        onMouseMove={habdleMouseMove}
+        onMouseUp={handleMouseUp}
+      >
+        <Layer>
+          {lines.map((line: any, i: any) => {
+            return (
+              <Line
+                key={i}
+                points={line.points}
+                stroke="black"
+                strokeWidth={line.tool === "eraser" ? 10 : 5}
+                tension={0.5}
+                lineCap="round"
+                lineJoin="round"
+                globalCompositeOperation={
+                  line.tool === "eraser" ? "destination-out" : "source-over"
+                }
+              />
+            );
+          })}
+        </Layer>
+      </Stage>
+    </>
   );
 };
 
